@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片处理与文档生成系统</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+</head>
+<body>
+    <div class="background-gradient"></div>
+    <div class="container">
+        <header>
+            <h1>图片处理与文档生成系统</h1>
+            <p>轻松完成图片合并、打包与Excel报告生成</p>
+        </header>
+
+        <main class="main-content">
+            <nav class="tabs">
+                <button id="tab-step1" class="tab-button active" data-tab="step1">
+                    <span class="tab-icon">1</span>
+                    <span>选择与合并</span>
+                </button>
+                <button id="tab-step2" class="tab-button" data-tab="step2" disabled>
+                    <span class="tab-icon">2</span>
+                    <span>预览与导出</span>
+                </button>
+            </nav>
+
+            <div id="panel-step1" class="tab-panel active">
+                <h2>第一步：选择图片文件</h2>
+                <p class="instructions">
+                    请选择所有需要处理的图片。系统将根据文件名 (例如: <code>YYYYMMDD-1.jpg</code>, <code>YYYYMMDD-2.jpg</code>...) 自动进行分组。
+                    每个有效分组必须包含不多不少4张图片。
+                </p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="image-input" multiple accept="image/jpeg, image/png">
+                    <label for="image-input" class="button" role="button" aria-label="选择图片文件">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                        <span>选择本地图片</span>
+                    </label>
+                </div>
+                <div id="status-info" class="status-info" aria-live="polite"></div>
+                <div class="action-bar">
+                    <button id="merge-button" class="button primary-button" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 8H2v12c0 1.1.9 2 2 2h12v-2H4V8zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-2 9h-3v3h-2v-3H8v-2h3V7h2v3h3v2z"/></svg>
+                        <span>开始合并</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="panel-step2" class="tab-panel">
+                 <h2>第二步：预览、下载与导出</h2>
+                 <p class="instructions">
+                    这里是所有成功合并的图片。您可以单独下载某一张，或将全部结果打包为ZIP文件。最后，可以生成一份包含所有信息的Excel报告。
+                </p>
+                <div class="action-bar">
+                    <button id="download-zip-button" class="button secondary-button" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm0 12H4V6h5.17l2 2H20v10zm-8-4h2v2h-2zm-4 0h2v2h-2zm8 0h2v2h-2z"/></svg>
+                        <span>打包下载 (ZIP)</span>
+                    </button>
+                    <button id="export-excel-button" class="button secondary-button" disabled>
+                         <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><g><rect fill="none" height="24" width="24"/></g><g><path d="M14,2H6C4.9,2,4,2.9,4,4v16c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V8L14,2z M16,18H8v-2h8V18z M16,14H8v-2h8V14z M13,9V3.5 L18.5,9H13z"/></g></svg>
+                        <span>导出为 Excel</span>
+                    </button>
+                </div>
+                <div id="image-grid" class="image-grid">
+                    <p class="placeholder">合并后的图片将显示在这里。</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>作者：ZCHAO v2025.10</p>
+        </footer>
+    </div>
+    
+    <!-- Modal for Progress -->
+    <div id="progress-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 id="progress-label">处理中...</h3>
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div id="progress-text" aria-live="polite">0 / 0</div>
+        </div>
+    </div>
+
+    <script type="module" src="index.tsx"></script>
+</body>
+</html>

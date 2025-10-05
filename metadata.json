@@ -1,0 +1,5 @@
+{
+  "name": "图片处理与文档生成系统",
+  "description": "A system with a modern, tab-based UI to batch merge images and generate Excel reports with embedded images. Author: ZCHAO v2025.10",
+  "requestFramePermissions": []
+}
