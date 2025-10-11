@@ -1,5 +1,5 @@
 //
-// **图片处理与文档生成系统 v2**
+// **图序有方，数有所归 v2**
 //
 // 实现了现代化的UI和工作流程:
 // 1. **选项卡式界面**: 清晰地分为“选择与合并”和“预览与导出”两个步骤。
@@ -26,6 +26,7 @@ const statusInfo = document.getElementById('status-info') as HTMLDivElement;
 const mergeButton = document.getElementById('merge-button') as HTMLButtonElement;
 const exportExcelButton = document.getElementById('export-excel-button') as HTMLButtonElement;
 const downloadZipButton = document.getElementById('download-zip-button') as HTMLButtonElement;
+const resetButton = document.getElementById('reset-button') as HTMLButtonElement;
 const imageGrid = document.getElementById('image-grid') as HTMLDivElement;
 
 // Modal References
@@ -106,6 +107,7 @@ mergeButton.addEventListener('click', async () => {
         displayAllMergedImages();
         exportExcelButton.disabled = false;
         downloadZipButton.disabled = false;
+        resetButton.disabled = false;
         tabStep2.disabled = false;
         switchTab('step2');
     }
@@ -191,6 +193,12 @@ exportExcelButton.addEventListener('click', async () => {
     
     hideModal();
 });
+
+/**
+ * 点击“重置并返回”按钮时触发
+ */
+resetButton.addEventListener('click', resetState);
+
 
 // --- Core Logic ---
 
@@ -311,6 +319,7 @@ function resetState() {
     mergeButton.disabled = true;
     exportExcelButton.disabled = true;
     downloadZipButton.disabled = true;
+    resetButton.disabled = true;
     tabStep2.disabled = true;
     switchTab('step1');
 }
