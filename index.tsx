@@ -125,7 +125,8 @@ downloadZipButton.addEventListener('click', async () => {
     const zip = new JSZip();
     let processedCount = 0;
     for (const image of mergedImages) {
-        zip.file(image.fileName, image.blob);
+        const zipFileName = `${image.id}.jpg`;
+        zip.file(zipFileName, image.blob);
         processedCount++;
         updateProgress(processedCount, mergedImages.length);
     }
